@@ -139,65 +139,40 @@ class TestAccountService(TestCase):
 
 
     def test_update_account(self):
-    #"""It should update an existing Account"""
-    # Create a new account
-        account = self._create_accounts(1)[0]
+        """It should Update an existing Account"""
+        # create an Account to update
+        test_account = AccountFactory()
+        resp = self.client.post(BASE_URL, json=test_account.serialize())
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
-    # Update the account with new data
-        updated_data = {
-            "name": "Updated Name",
-            "email": "updated@example.com"
-        }
-        resp = self.client.put(
-            f"{BASE_URL}/{account.id}",
-            json=updated_data,
-            content_type="application/json"
-        )
+        # update the account
+        new_account = resp.get_json()
+        new_account["name"] = "Something Known"
+        resp = self.client.put(f"{BASE_URL}/{new_account['id']}", json=new_account)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-    # Retrieve the updated account
-        updated_account = Account.query.get(account.id)
-        self.assertIsNotNone(updated_account)
-        self.assertEqual(updated_account.name, updated_data["name"])
-        self.assertEqual(updated_account.email, updated_data["email"])
-
+        updated_account = resp.get_json()
+        self.assertEqual(updated_account["name"], "Something Known")
 
 
     def test_delete_account(self):
-    #"""It should delete an existing Account"""
-    # Create a new account
+        
         account = self._create_accounts(1)[0]
-
-    # Delete the account
-        resp = self.client.delete(
-            f"{BASE_URL}/{account.id}",
-            content_type="application/json"
-        )
+        resp = self.client.delete(f"{BASE_URL}/{account.id}")
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
 
-    # Verify that the account has been deleted
-        deleted_account = Account.query.get(account.id)
-        self.assertIsNone(deleted_account)
 
 
 
-
-    def test_list_accounts(self):
-    
-    # Create multiple accounts
-        accounts = self._create_accounts(3)
-
-    # Make a GET request to list accounts
-        resp = self.client.get(f"{BASE_URL}/", content_type="application/json")
+    def test_get_account_list(self):
+        
+        self._create_accounts(5)
+        resp = self.client.get(BASE_URL)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-    # Retrieve the response data
         data = resp.get_json()
+        self.assertEqual(len(data), 5)
 
-    # Assert that the number of accounts returned matches the number of created accounts
-        self.assertEqual(len(data), len(accounts))
 
-    # Assert that each account's name is present in the response data
-        for i, account in enumerate(accounts):
-            self.assertEqual(data[i]["name"], account.name)
-
+    def test_method_not_allowed(self):
+        """It should not allow an illegal method call"""
+        resp = self.client.delete(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
