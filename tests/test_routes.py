@@ -135,6 +135,8 @@ class TestAccountService(TestCase):
         data = resp.get_json()
         self.assertEqual(data["name"], account.name)
 
+        
+
 
     def test_update_account(self):
     #"""It should update an existing Account"""
@@ -159,4 +161,21 @@ class TestAccountService(TestCase):
         self.assertEqual(updated_account.name, updated_data["name"])
         self.assertEqual(updated_account.email, updated_data["email"])
 
+
+
+    def test_delete_account(self):
+    #"""It should delete an existing Account"""
+    # Create a new account
+        account = self._create_accounts(1)[0]
+
+    # Delete the account
+        resp = self.client.delete(
+            f"{BASE_URL}/{account.id}",
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+
+    # Verify that the account has been deleted
+        deleted_account = Account.query.get(account.id)
+        self.assertIsNone(deleted_account)
 
