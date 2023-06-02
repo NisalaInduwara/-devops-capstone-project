@@ -136,4 +136,27 @@ class TestAccountService(TestCase):
         self.assertEqual(data["name"], account.name)
 
 
-    
+    def test_update_account(self):
+    #"""It should update an existing Account"""
+    # Create a new account
+        account = self._create_accounts(1)[0]
+
+    # Update the account with new data
+        updated_data = {
+            "name": "Updated Name",
+            "email": "updated@example.com"
+        }
+        resp = self.client.put(
+            f"{BASE_URL}/{account.id}",
+            json=updated_data,
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+    # Retrieve the updated account
+        updated_account = Account.query.get(account.id)
+        self.assertIsNotNone(updated_account)
+        self.assertEqual(updated_account.name, updated_data["name"])
+        self.assertEqual(updated_account.email, updated_data["email"])
+
+

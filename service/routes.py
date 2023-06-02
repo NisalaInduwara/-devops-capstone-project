@@ -89,7 +89,28 @@ def test_get_account_not_found(self):
 # UPDATE AN EXISTING ACCOUNT
 ######################################################################
 
-# ... place you code here to UPDATE an account ...
+@app.route("/accounts/<int:account_id>", methods=["PUT"])
+def update_account(account_id):
+   
+    app.logger.info("Request to update an Account with id: %s", account_id)
+
+    # Check if the account exists
+    account = Account.find(account_id)
+    if not account:
+        abort(status.HTTP_404_NOT_FOUND, f"Account with id [{account_id}] could not be found.")
+
+    # Retrieve the updated data from the request payload
+    updated_data = request.json
+
+    # Update the account with the new data
+    account.name = updated_data.get("name", account.name)
+    account.email = updated_data.get("email", account.email)
+
+    # Save the changes to the database
+    db.session.commit()
+
+    return account.serialize(), status.HTTP_200_OK
+
 
 
 ######################################################################
