@@ -135,7 +135,7 @@ class TestAccountService(TestCase):
         data = resp.get_json()
         self.assertEqual(data["name"], account.name)
 
-        
+
 
 
     def test_update_account(self):
@@ -178,4 +178,26 @@ class TestAccountService(TestCase):
     # Verify that the account has been deleted
         deleted_account = Account.query.get(account.id)
         self.assertIsNone(deleted_account)
+
+
+
+
+    def test_list_accounts(self):
+    
+    # Create multiple accounts
+        accounts = self._create_accounts(3)
+
+    # Make a GET request to list accounts
+        resp = self.client.get(f"{BASE_URL}/", content_type="application/json")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+    # Retrieve the response data
+        data = resp.get_json()
+
+    # Assert that the number of accounts returned matches the number of created accounts
+        self.assertEqual(len(data), len(accounts))
+
+    # Assert that each account's name is present in the response data
+        for i, account in enumerate(accounts):
+            self.assertEqual(data[i]["name"], account.name)
 
