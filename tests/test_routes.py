@@ -11,7 +11,7 @@ from unittest import TestCase
 from tests.factories import AccountFactory
 from service.common import status  # HTTP Status Codes
 from service.models import db, Account, init_db
-from . import app
+from service import app
 from service import talisman
 
 DATABASE_URI = os.getenv(
