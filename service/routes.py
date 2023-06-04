@@ -6,14 +6,12 @@ This microservice handles the lifecycle of Accounts
 from flask import jsonify, request, make_response, abort
 from service.models import Account
 from service.common import status
-#from tests.test_routes import BASE_URL
-from service.routes import BASE_URL
+from tests.test_routes import BASE_URL
 from . import app
 
 
-############################################################
-# Health Endpoint
-############################################################
+
+
 # Health Endpoint
 @app.route("/health")
 def health():
@@ -40,8 +38,7 @@ def create_account():
     account.deserialize(request.get_json())
     account.create()
     message = account.serialize()
-    location_url = f"{BASE_URL}/accounts/{account.id}"
-  # Update this once get_accounts has been implemented
+    location_url = BASE_URL  # Update this once get_accounts has been implemented
     return make_response(jsonify(message), status.HTTP_201_CREATED, {"Location": location_url})
 
 
