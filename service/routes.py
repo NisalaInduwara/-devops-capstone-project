@@ -9,6 +9,10 @@ from service.common import status
 from tests.test_routes import BASE_URL
 from . import app
 
+
+############################################################
+# Health Endpoint
+############################################################
 # Health Endpoint
 @app.route("/health")
 def health():
