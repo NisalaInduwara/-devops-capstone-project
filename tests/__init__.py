@@ -1,4 +1,4 @@
 from flask_talisman import Talisman
-from test_routes import app
+from tests import app
 
 talisman = Talisman(app)
