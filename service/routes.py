@@ -6,7 +6,7 @@ This microservice handles the lifecycle of Accounts
 from flask import jsonify, request, make_response, abort
 from service.models import Account
 from service.common import status
-from tests.test_routes import BASE_URL
+from tests import BASE_URL
 from . import app
 
 
