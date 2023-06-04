@@ -28,4 +28,4 @@ coverage==7.1.0
 httpie==3.2.1
 
 
-Flask-Talisman==1.1.0
+Flask-Talisman
